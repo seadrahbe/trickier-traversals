@@ -104,7 +104,27 @@ public class Traversals {
    * @return the number of unique values in the tree, or 0 if the tree is null
    */
   public static int countDistinctValues(TreeNode<Integer> node) {
-    return 0;
+      if (node == null) return 0;
+
+      Queue<TreeNode<Integer>> q = new LinkedList<>();
+      Set<Integer> indistinct = new HashSet<>();
+
+      q.offer(node);
+
+      while (!q.isEmpty()) {
+        int len = q.size();
+
+        for (int i = 0; i < len; i++) {
+          TreeNode<Integer> curr = q.poll();
+          indistinct.add(curr.value);
+
+          if (curr.left != null) q.offer(curr.left);
+
+          if (curr.right != null) q.offer(curr.right);
+        }
+      }
+
+    return indistinct.size();
   }
 
   /**
@@ -116,7 +136,32 @@ public class Traversals {
    * @return true if there exists a strictly increasing root-to-leaf path, false otherwise
    */
   public static boolean hasStrictlyIncreasingPath(TreeNode<Integer> node) {
-    return false;
+      if (node == null) return false;
+      if (node.left == null && node.right == null) {
+        return true;
+      }
+
+      return helper(node.left, node.value) || helper(node.right, node.value);
+      
+  }
+
+  public static boolean helper(TreeNode<Integer> node, int lastVal) {
+      
+    if (lastVal > node.value) {
+      return false;
+    } else {
+      if (node.left == null && node.right == null) {
+        return true;
+      } else {
+        if (node.left != null && node.right != null) {
+          return helper(node.left, node.value) || helper(node.right, node.value);
+        } else if (node.left != null) {
+          return helper(node.left, node.value);
+        } else {
+          return helper(node.right, node.value);
+        }
+      }
+    }
   }
 
   // OPTIONAL CHALLENGE
